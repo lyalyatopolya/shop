@@ -26,6 +26,11 @@ configurations {
 	}
 }
 
+bootJar {
+	archiveFileName = 'app.jar'
+	mainClass = 'com.example.shop.ShopApplication'
+}
+
 vaadin {
 	productionMode = true
 }
