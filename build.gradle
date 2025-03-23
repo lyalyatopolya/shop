@@ -27,7 +27,7 @@ configurations {
 }
 
 bootJar {
-	archiveFileName = 'app.jar'
+	archiveFileName = 'shop.jar'
 	mainClass = 'com.example.shop.ShopApplication'
 }
 
