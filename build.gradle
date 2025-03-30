@@ -37,10 +37,16 @@ vaadin {
 
 dependencies {
 	implementation('com.vaadin:vaadin-spring-boot-starter')
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	annotationProcessor "org.hibernate:hibernate-jpamodelgen:6.6.7.Final"
+	runtimeOnly 'org.postgresql:postgresql'
 }
 
 dependencyManagement {
