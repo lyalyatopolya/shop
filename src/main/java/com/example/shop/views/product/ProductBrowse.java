@@ -57,9 +57,11 @@ public class ProductBrowse extends VerticalLayout implements RouterLayout {
             productEditor.open(null);
         });
         MenuItem editItem = menuBar.addItem("Изменить", e -> {
+            productEditor.open(productGrid.asSingleSelect().getValue());
         });
         editItem.setEnabled(false);
         MenuItem deleteItem = menuBar.addItem("Удалить", e -> {
+            productRestService.deleteProduct(productGrid.asSingleSelect().getValue().getId());
             refreshProductGrid();
         });
         deleteItem.setEnabled(false);

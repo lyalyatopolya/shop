@@ -64,7 +64,11 @@ public class ProductEditor extends Dialog {
         });
         Button saveButton = new Button("Сохранить", e -> {
             if (binder.validate().isOk()) {
-                productRestService.createProduct(productDto);
+                if(Objects.isNull(productDto.getId())){
+                    productRestService.createProduct(productDto);
+                }else{
+                    productRestService.updateProduct(productDto);
+                }
                 this.close();
                 afterSaveFunc.run();
             }
