@@ -10,8 +10,6 @@ import com.example.shop.repository.OrderProductRepository;
 import com.example.shop.repository.OrderRepository;
 import com.example.shop.repository.PersonRepository;
 import com.example.shop.service.ProductRestService;
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -82,14 +80,11 @@ public class OrderEditor extends Dialog {
         orderProductGrid.addColumn("id").setHeader("Id");
         orderProductGrid.addColumn(OrderProduct::getProductName).setHeader("Название продукта");
         orderProductGrid.addComponentColumn(this::generateCountField).setHeader("Кол-во продукта");
-        orderProductGrid.addColumn(OrderProduct::getCountInStoreHouse).setHeader("Кол-во продуктов на складе");
+        orderProductGrid.addColumn(e -> e.getCountInStoreHouse() == 0 ? "Нет в наличии" : e.getCountInStoreHouse()).setHeader("Кол-во продуктов на складе");
         return orderProductGrid;
     }
 
-    private Component generateCountField(OrderProduct orderProduct) {
-        if (orderProduct.getCount() == 0) {
-            return new Text("Нет в наличии");
-        }
+    private IntegerField generateCountField(OrderProduct orderProduct) {
         IntegerField countField = new IntegerField();
         countField.setValue(orderProduct.getCount());
         countField.setStepButtonsVisible(true);
