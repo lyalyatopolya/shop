@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class ProductRestService {
 
-    private static final String API_URL = "http://localhost:8081/api/";
+    private static final String API_URL = "http://storehouse:8081/api/";
     private final RestTemplate restTemplate = new RestTemplate();
 
 
