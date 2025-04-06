@@ -2,14 +2,16 @@ package com.example.shop.views.order;
 
 import com.example.shop.dto.OrderDto;
 import com.example.shop.dto.ProductDto;
+import com.example.shop.kafka.KafkaOrderProducerService;
 import com.example.shop.model.Order;
 import com.example.shop.model.OrderProduct;
 import com.example.shop.model.Person;
 import com.example.shop.repository.OrderProductRepository;
 import com.example.shop.repository.OrderRepository;
 import com.example.shop.repository.PersonRepository;
-import com.example.shop.kafka.KafkaOrderProducerService;
 import com.example.shop.service.ProductRestService;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -84,7 +86,10 @@ public class OrderEditor extends Dialog {
         return orderProductGrid;
     }
 
-    private IntegerField generateCountField(OrderProduct orderProduct) {
+    private Component generateCountField(OrderProduct orderProduct) {
+        if (orderProduct.getCount() == 0) {
+            return new Text("Нет в наличии");
+        }
         IntegerField countField = new IntegerField();
         countField.setValue(orderProduct.getCount());
         countField.setStepButtonsVisible(true);
@@ -113,12 +118,13 @@ public class OrderEditor extends Dialog {
         setSizeFull();
     }
 
-    private void initProductDtoField(){
+    private void initProductDtoField() {
         productDtoField.addValueChangeListener(e -> {
             if (Objects.isNull(e.getValue())) {
                 return;
             }
-            ProductDto productDto = e.getValue();;
+            ProductDto productDto = e.getValue();
+            ;
             productDtoField.setValue(null);
             OrderProduct orderProduct = new OrderProduct();
             orderProduct.setOrder(order);
@@ -142,7 +148,7 @@ public class OrderEditor extends Dialog {
         productDtoField.setItemLabelGenerator(ProductDto::getName);
     }
 
-    private void validateSaveAndSendKafkaMessage(){
+    private void validateSaveAndSendKafkaMessage() {
         if (binder.validate().isOk()) {
             Order savedOrder = orderRepository.save(order);
             List<OrderProduct> savedOrderProducts = orderProductRepository.saveAll(orderProducts);
@@ -157,7 +163,8 @@ public class OrderEditor extends Dialog {
                 productDto.setName(orderProduct.getProductName());
                 productDto.setCount(orderProduct.getCount());
                 productDtoList.add(productDto);
-            };
+            }
+            ;
             orderDto.setProductDtoList(productDtoList);
 
             kafkaOrderProducerService.sendMessage("shop-order-requests", orderDto);
