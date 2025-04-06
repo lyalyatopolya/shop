@@ -32,7 +32,6 @@ bootJar {
 }
 vaadin {
 	productionMode = true
-	pwaEnabled = false
 }
 
 dependencies {
