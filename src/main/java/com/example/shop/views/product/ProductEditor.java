@@ -1,15 +1,11 @@
 package com.example.shop.views.product;
 
 import com.example.shop.dto.ProductDto;
-import com.example.shop.model.Person;
-import com.example.shop.repository.PersonRepository;
 import com.example.shop.service.ProductRestService;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -43,8 +39,7 @@ public class ProductEditor extends Dialog {
         this.productDto = Objects.requireNonNullElseGet(productDto, ProductDto::new);
         binder.removeBean();
         binder.setBean(this.productDto);
-        this.setHeaderTitle("Создать/Редактировать");
-        this.setCloseOnOutsideClick(false);
+
         this.open();
     }
 
@@ -64,9 +59,9 @@ public class ProductEditor extends Dialog {
         });
         Button saveButton = new Button("Сохранить", e -> {
             if (binder.validate().isOk()) {
-                if(Objects.isNull(productDto.getId())){
+                if (Objects.isNull(productDto.getId())) {
                     productRestService.createProduct(productDto);
-                }else{
+                } else {
                     productRestService.updateProduct(productDto);
                 }
                 this.close();
@@ -74,5 +69,7 @@ public class ProductEditor extends Dialog {
             }
         });
         this.getFooter().add(saveButton, closeButton);
+        this.setHeaderTitle("Создать/Редактировать");
+        this.setCloseOnOutsideClick(false);
     }
 }

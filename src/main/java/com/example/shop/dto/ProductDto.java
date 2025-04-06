@@ -1,8 +1,13 @@
 package com.example.shop.dto;
 
+import java.util.Objects;
+import java.util.UUID;
+
 public class ProductDto {
 
-    private String id;
+    public ProductDto() {}
+
+    private UUID id;
 
     private String name;
 
@@ -34,11 +39,24 @@ public class ProductDto {
         this.comment = comment;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProductDto that = (ProductDto) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

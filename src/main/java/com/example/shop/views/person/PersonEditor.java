@@ -38,8 +38,6 @@ public class PersonEditor extends Dialog {
         this.person = Objects.requireNonNullElseGet(person, Person::new);
         binder.removeBean();
         binder.setBean(this.person);
-        this.setHeaderTitle("Создать/Редактировать");
-        this.setCloseOnOutsideClick(false);
         this.open();
     }
 
@@ -63,6 +61,9 @@ public class PersonEditor extends Dialog {
                 afterSaveFunc.run();
             }
         });
-        this.getFooter().add(saveButton, closeButton);
+        getFooter().add(saveButton, closeButton);
+        setHeaderTitle("Создать/Редактировать");
+        setCloseOnOutsideClick(false);
+        setSizeFull();
     }
 }
