@@ -30,9 +30,9 @@ bootJar {
 	archiveFileName = 'shop.jar'
 	mainClass = 'com.example.shop.ShopApplication'
 }
-
 vaadin {
 	productionMode = true
+	pwaEnabled = false
 }
 
 dependencies {
