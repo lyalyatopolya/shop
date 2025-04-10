@@ -98,11 +98,11 @@ public class OrderEditor extends Dialog {
     private void initDialog() {
         binder.forField(personComboBoxField).bind("person");
         FormLayout fieldForm = new FormLayout(personComboBoxField, productDtoField);
-        this.add(fieldForm, orderProductGrid);
+        add(fieldForm, orderProductGrid);
         initProductDtoField();
 
         Button closeButton = new Button("Закрыть", e -> {
-            this.close();
+            close();
             afterSaveFunc.run();
         });
         Button saveButton = new Button("Сохранить", e -> validateSaveAndSendKafkaMessage());
