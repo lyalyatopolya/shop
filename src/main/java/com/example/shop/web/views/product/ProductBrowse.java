@@ -1,8 +1,8 @@
-package com.example.shop.views.product;
+package com.example.shop.web.views.product;
 
-import com.example.shop.dto.ProductDto;
-import com.example.shop.service.ProductRestService;
-import com.example.shop.views.MainView;
+import com.example.shop.model.dto.ProductDto;
+import com.example.shop.service.ProductRestClient;
+import com.example.shop.web.views.MainView;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
@@ -18,7 +18,7 @@ import com.vaadin.flow.router.RouterLayout;
 @Route(value = "product", layout = MainView.class)
 public class ProductBrowse extends VerticalLayout implements RouterLayout {
 
-    private final ProductRestService productRestService;
+    private final ProductRestClient productRestClient;
 
     private final ProductEditor productEditor;
 
@@ -26,12 +26,11 @@ public class ProductBrowse extends VerticalLayout implements RouterLayout {
 
     private final MenuBar menuBar;
 
-    public ProductBrowse(ProductRestService productRestService, ProductEditor productEditor) {
-        this.productRestService = productRestService;
+    public ProductBrowse(ProductRestClient productRestClient, ProductEditor productEditor) {
+        this.productRestClient = productRestClient;
         this.productEditor = productEditor;
         menuBar = createMenuBar();
         init();
-        refreshProductGrid();
     }
 
     private void init() {
@@ -61,7 +60,7 @@ public class ProductBrowse extends VerticalLayout implements RouterLayout {
         });
         editItem.setEnabled(false);
         MenuItem deleteItem = menuBar.addItem("Удалить", e -> {
-            productRestService.deleteProduct(productGrid.asSingleSelect().getValue().getId().toString());
+            productRestClient.deleteProduct(productGrid.asSingleSelect().getValue().getId().toString());
             refreshProductGrid();
         });
         deleteItem.setEnabled(false);
@@ -76,6 +75,6 @@ public class ProductBrowse extends VerticalLayout implements RouterLayout {
     }
 
     private void refreshProductGrid() {
-        productGrid.setItems(productRestService.getAllProducts());
+        productGrid.setItems(productRestClient.getAllProducts());
     }
 }

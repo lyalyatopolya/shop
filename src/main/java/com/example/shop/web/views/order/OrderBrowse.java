@@ -1,16 +1,13 @@
-package com.example.shop.views.order;
+package com.example.shop.web.views.order;
 
-import com.example.shop.model.Order;
+import com.example.shop.model.entity.Order;
 import com.example.shop.repository.OrderRepository;
-import com.example.shop.views.MainView;
+import com.example.shop.web.views.MainView;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.ParentLayout;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouterLayout;
+import com.vaadin.flow.router.*;
 
 import java.util.stream.Collectors;
 
@@ -65,6 +62,11 @@ public class OrderBrowse extends VerticalLayout implements RouterLayout {
         menuBar.addItem("Обновить", e -> {
             refreshOrderGrid();
         });
+
+        menuBar.addItem("Вызвать ошибку", e -> {
+            throw new IllegalArgumentException("No clicking");
+        });
+
         return menuBar;
     }
 

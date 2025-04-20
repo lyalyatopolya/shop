@@ -1,25 +1,29 @@
-package com.example.shop.views.order;
+package com.example.shop.web.views.order;
 
-import com.example.shop.dto.OrderDto;
-import com.example.shop.dto.ProductDto;
 import com.example.shop.kafka.KafkaOrderProducerService;
-import com.example.shop.model.Order;
-import com.example.shop.model.OrderProduct;
-import com.example.shop.model.Person;
+import com.example.shop.model.entity.Order;
+import com.example.shop.model.entity.OrderProduct;
+import com.example.shop.model.entity.Person;
+import com.example.shop.model.dto.OrderDto;
+import com.example.shop.model.dto.ProductDto;
+import com.example.shop.model.dto.ProductListResult;
 import com.example.shop.repository.OrderProductRepository;
 import com.example.shop.repository.OrderRepository;
 import com.example.shop.repository.PersonRepository;
-import com.example.shop.service.ProductRestService;
+import com.example.shop.service.ProductRestClient;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.RouteScope;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +36,7 @@ import java.util.stream.Collectors;
 public class OrderEditor extends Dialog {
 
     private final PersonRepository personRepository;
-    private final ProductRestService productRestService;
+    private final ProductRestClient productRestClient;
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
     private final KafkaOrderProducerService kafkaOrderProducerService;
@@ -41,20 +45,21 @@ public class OrderEditor extends Dialog {
     private final ComboBox<Person> personComboBoxField = new ComboBox<>("Заказчик");
     private final ComboBox<ProductDto> productDtoField = new ComboBox<>("Добавить продукт к заказу");
     private final Grid<OrderProduct> orderProductGrid;
+    private final List<OrderProduct> orderProductData = new ArrayList<>();
 
     private final List<OrderProduct> orderProducts = new ArrayList<>();
 
     private Order order;
-
+    @Setter
     private Runnable afterSaveFunc;
 
     public OrderEditor(PersonRepository personRepository,
-                       ProductRestService productRestService,
+                       ProductRestClient productRestClient,
                        OrderRepository orderRepository,
                        OrderProductRepository orderProductRepository,
                        KafkaOrderProducerService kafkaOrderProducerService) {
         this.personRepository = personRepository;
-        this.productRestService = productRestService;
+        this.productRestClient = productRestClient;
         this.orderRepository = orderRepository;
         this.orderProductRepository = orderProductRepository;
         this.kafkaOrderProducerService = kafkaOrderProducerService;
@@ -69,10 +74,6 @@ public class OrderEditor extends Dialog {
         setupData();
         binder.setBean(order);
         open();
-    }
-
-    public void setAfterSaveFunc(Runnable func) {
-        afterSaveFunc = func;
     }
 
     private Grid<OrderProduct> createOrderProductGrid() {
@@ -119,7 +120,6 @@ public class OrderEditor extends Dialog {
                 return;
             }
             ProductDto productDto = e.getValue();
-            ;
             productDtoField.setValue(null);
             OrderProduct orderProduct = new OrderProduct();
             orderProduct.setOrder(order);
@@ -128,22 +128,31 @@ public class OrderEditor extends Dialog {
             orderProduct.setProductName(productDto.getName());
             orderProduct.setCountInStoreHouse(productDto.getCount());
             if (!orderProducts.stream().map(OrderProduct::getProductId).collect(Collectors.toSet()).contains(e.getValue().getId())) {
-                orderProducts.add(orderProduct);
+                orderProductData.add(orderProduct);
             }
-            orderProductGrid.setItems(orderProducts);
+            orderProductGrid.setItems(orderProductData);
         });
     }
 
     private void setupData() {
-        orderProductGrid.setItems(Collections.emptyList());
+        orderProductData.clear();
+        orderProductGrid.setItems(orderProductData);
         personComboBoxField.setItems(personRepository.findAll());
         personComboBoxField.setItemLabelGenerator(Person::getName);
 
-        productDtoField.setItems(productRestService.getAllProducts());
+        productDtoField.setItems(productRestClient.getAllProducts());
         productDtoField.setItemLabelGenerator(ProductDto::getName);
     }
 
     private void validateSaveAndSendKafkaMessage() {
+        if(orderProductData.isEmpty()){
+            Notification notification = new Notification("Продукты для заказа отсутствуют");
+            notification.setDuration(5000);
+            notification.setPosition(Notification.Position.MIDDLE);
+            notification.addThemeVariants(NotificationVariant.LUMO_WARNING);
+            notification.open();
+            return;
+        }
         if (binder.validate().isOk()) {
             Order savedOrder = orderRepository.save(order);
             List<OrderProduct> savedOrderProducts = orderProductRepository.saveAll(orderProducts);
@@ -159,9 +168,7 @@ public class OrderEditor extends Dialog {
                 productDto.setCount(orderProduct.getCount());
                 productDtoList.add(productDto);
             }
-            ;
             orderDto.setProductDtoList(productDtoList);
-
             kafkaOrderProducerService.sendMessage("shop-order-requests", orderDto);
         }
     }

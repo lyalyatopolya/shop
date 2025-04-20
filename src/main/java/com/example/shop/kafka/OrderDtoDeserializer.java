@@ -1,6 +1,6 @@
 package com.example.shop.kafka;
 
-import com.example.shop.dto.OrderDto;
+import com.example.shop.model.dto.OrderDto;
 import com.example.shop.model.enums.OrderStatus;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

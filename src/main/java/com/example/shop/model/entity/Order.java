@@ -1,13 +1,18 @@
-package com.example.shop.model;
+package com.example.shop.model.entity;
 
 import com.example.shop.model.enums.OrderStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@Setter
+@Getter
 @Entity(name = "shop_Order")
 @Table(name = "SHOP_ORDER")
 public class Order extends AbstractPersistable<UUID> {
@@ -19,42 +24,11 @@ public class Order extends AbstractPersistable<UUID> {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.FORMING;
 
+    @NotNull(message = "Заказчик не указан")
     @ManyToOne
     @JoinColumn(name = "PERSON_ID", nullable = false)
     private Person person;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
     private Set<OrderProduct> orderProducts = new HashSet<>();
-
-    public Set<OrderProduct> getOrderProducts() {
-        return orderProducts;
-    }
-
-    public void setOrderProducts(Set<OrderProduct> orderProducts) {
-        this.orderProducts = orderProducts;
-    }
-
-    public String getStatusComment() {
-        return statusComment;
-    }
-
-    public void setStatusComment(String statusComment) {
-        this.statusComment = statusComment;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 }

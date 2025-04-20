@@ -1,8 +1,8 @@
-package com.example.shop.views;
+package com.example.shop.web.views;
 
-import com.example.shop.views.order.OrderBrowse;
-import com.example.shop.views.person.PersonBrowse;
-import com.example.shop.views.product.ProductBrowse;
+import com.example.shop.web.views.order.OrderBrowse;
+import com.example.shop.web.views.person.PersonBrowse;
+import com.example.shop.web.views.product.ProductBrowse;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;

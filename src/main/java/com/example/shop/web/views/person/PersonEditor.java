@@ -1,6 +1,6 @@
-package com.example.shop.views.person;
+package com.example.shop.web.views.person;
 
-import com.example.shop.model.Person;
+import com.example.shop.model.entity.Person;
 import com.example.shop.repository.PersonRepository;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;

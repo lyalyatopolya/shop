@@ -1,7 +1,6 @@
 package com.example.shop.kafka;
 
-import com.example.shop.dto.OrderDto;
-import com.example.shop.repository.OrderRepository;
+import com.example.shop.model.dto.OrderDto;
 import com.example.shop.service.OrderService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;

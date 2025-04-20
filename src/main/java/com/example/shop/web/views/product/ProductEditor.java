@@ -1,16 +1,19 @@
-package com.example.shop.views.product;
+package com.example.shop.web.views.product;
 
-import com.example.shop.dto.ProductDto;
-import com.example.shop.service.ProductRestService;
+import com.example.shop.model.dto.ProductDto;
+import com.example.shop.service.ProductRestClient;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.RouteScope;
 import com.vaadin.flow.spring.annotation.SpringComponent;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -18,7 +21,7 @@ import java.util.Objects;
 @RouteScope
 public class ProductEditor extends Dialog {
 
-    private final ProductRestService productRestService;
+    private final ProductRestClient productRestClient;
 
     private final Binder<ProductDto> binder = new BeanValidationBinder<>(ProductDto.class, false);
 
@@ -28,10 +31,11 @@ public class ProductEditor extends Dialog {
 
     private ProductDto productDto;
 
+    @Setter
     private Runnable afterSaveFunc;
 
-    public ProductEditor(ProductRestService productRestService) {
-        this.productRestService = productRestService;
+    public ProductEditor(ProductRestClient productRestClient) {
+        this.productRestClient = productRestClient;
         initDialog();
     }
 
@@ -41,10 +45,6 @@ public class ProductEditor extends Dialog {
         binder.setBean(this.productDto);
 
         this.open();
-    }
-
-    public void setAfterSaveFunc(Runnable func) {
-        afterSaveFunc = func;
     }
 
     private void initDialog() {
@@ -59,10 +59,18 @@ public class ProductEditor extends Dialog {
         });
         Button saveButton = new Button("Сохранить", e -> {
             if (binder.validate().isOk()) {
+                String failResult;
                 if (Objects.isNull(productDto.getId())) {
-                    productRestService.createProduct(productDto);
+                    failResult = productRestClient.createProduct(productDto);
                 } else {
-                    productRestService.updateProduct(productDto);
+                    failResult = productRestClient.updateProduct(productDto);
+                }
+                if(Objects.nonNull(failResult)){
+                    Notification notification = new Notification(failResult);
+                    notification.setDuration(5000);
+                    notification.setPosition(Notification.Position.MIDDLE);
+                    notification.addThemeVariants(NotificationVariant.LUMO_WARNING);
+                    notification.open();
                 }
                 this.close();
                 afterSaveFunc.run();

@@ -1,7 +1,7 @@
 package com.example.shop.service;
 
-import com.example.shop.dto.OrderDto;
-import com.example.shop.model.Order;
+import com.example.shop.model.dto.OrderDto;
+import com.example.shop.model.entity.Order;
 import com.example.shop.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

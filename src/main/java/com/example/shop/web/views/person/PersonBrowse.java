@@ -1,8 +1,8 @@
-package com.example.shop.views.person;
+package com.example.shop.web.views.person;
 
-import com.example.shop.model.Person;
+import com.example.shop.model.entity.Person;
 import com.example.shop.repository.PersonRepository;
-import com.example.shop.views.MainView;
+import com.example.shop.web.views.MainView;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
